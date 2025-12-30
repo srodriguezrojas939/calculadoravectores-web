@@ -3,394 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Vectores - √(Raiz) Cuadrada²</title>
+    <title>Vectores - √(Raiz) Cuadrada²</title>
     <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
     <style>
-        /* --- ESTÉTICA ORIGINAL MANTENIDA --- */
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans:wght@400;600;700&display=swap');
 
-        .fade-in { opacity: 0; transform: translateY(20px); animation: fadeUp 0.8s ease forwards; }
-        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
-
         body { 
-            background: white; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            padding: 20px; 
-            box-sizing: border-box; 
-            color: #333;
-            font-family: 'Open Sans', sans-serif;
+            background: white; font-family: 'Open Sans', sans-serif; 
+            display: flex; justify-content: center; padding: 20px; color: #333;
         }
 
         .calculadora-moderna {
-            max-width: 900px; width: 100%; padding: 40px 30px;
+            max-width: 950px; width: 100%; padding: 40px;
             background: #F2F2F2; border-radius: 40px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.05);
         }
 
         .header-section { text-align: center; margin-bottom: 25px; }
-        .header-section h1 { font-size: 26px; margin: 0; font-family: 'Playfair Display', serif; font-weight: 700; }
-        .header-section p { font-size: 18px; font-weight: 600; color: #333; font-family: 'Playfair Display', serif; margin: 5px 0; }
+        .header-section h1 { font-size: 26px; margin: 0; font-family: 'Playfair Display', serif; }
+        .header-section p { font-size: 18px; font-weight: 600; font-family: 'Playfair Display', serif; margin: 5px 0; }
 
-        /* --- PÍLDORA SELECTORA --- */
+        /* PÍLDORA */
         .pill-container { display: flex; justify-content: center; margin-bottom: 30px; }
-        .pill { background: #e0e0e0; border-radius: 50px; padding: 5px; display: flex; width: fit-content; border: 1px solid #ccc; }
-        .pill-btn { border: none; padding: 10px 25px; border-radius: 40px; font-size: 13px; font-weight: 700; cursor: pointer; transition: 0.3s; background: transparent; color: #666; font-family: 'Open Sans', sans-serif; }
+        .pill { background: #e0e0e0; border-radius: 50px; padding: 5px; display: flex; border: 1px solid #ccc; }
+        .pill-btn { 
+            border: none; padding: 10px 25px; border-radius: 40px; font-size: 13px; 
+            font-weight: 700; cursor: pointer; transition: 0.3s; background: transparent; color: #666; 
+        }
         .pill-btn.active { background: white; color: black; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
-        /* --- SECCIONES DE CONTENIDO --- */
         .content-section { display: none; }
-        .content-section.active { display: block; }
+        .active-section { display: block; }
 
-        /* --- TABLA DE VECTORES (SUMAS) --- */
-        .vector-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .vector-table th, .vector-table td { padding: 10px; text-align: center; border-bottom: 1px solid #eee; }
-        .vector-table th { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; }
-        .vector-row-label { font-weight: 700; }
-        .vector-input { width: 80px; padding: 8px; border: 1px solid #ccc; border-radius: 15px; text-align: center; font-family: 'Open Sans', sans-serif; }
-        .vector-result { background: #e9e9e9; font-weight: 700; }
-        .btn-icon { width: 30px; height: 30px; border-radius: 50%; border: none; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; }
-        .btn-add { background: #4CAF50; } .btn-add:hover { background: #45a049; }
-        .btn-remove { background: #f44336; } .btn-remove:hover { background: #d32f2f; }
+        /* TABLA DE VECTORES */
+        .vector-container { background: white; border-radius: 25px; padding: 20px; border: 1px solid #ddd; margin-bottom: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th { font-size: 11px; text-transform: uppercase; color: #888; padding: 10px; }
+        td { padding: 8px; text-align: center; }
 
-        /* --- INPUTS DE PRODUCTOS --- */
-        .grid-inputs-prod { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
-        .input-group { display: flex; flex-direction: column; }
-        label { font-size: 11px; font-weight: 700; margin-bottom: 5px; margin-left: 10px; color: #555; }
-        input[type="number"] { padding: 12px 15px; border: 1px solid #ccc; border-radius: 20px; font-size: 14px; background: white; transition: 0.3s; width: 100%; box-sizing: border-box; font-family: 'Open Sans', sans-serif; }
+        input { 
+            width: 80px; padding: 10px; border: 1px solid #ccc; border-radius: 15px; 
+            text-align: center; font-family: 'Open Sans', sans-serif; font-size: 13px;
+        }
         input:focus { border-color: #000; outline: none; }
+        .res-input { background: #f0f0f0; font-weight: 700; border: none; }
 
-        /* --- SELECTOR DE OPERACIÓN --- */
-        .operation-selector { display: flex; gap: 15px; margin-bottom: 25px; justify-content: center; }
-        .radio-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
-        input[type="radio"] { accent-color: black; }
+        .btn-black { 
+            background: black; color: white; border: none; width: 35px; height: 35px; 
+            border-radius: 50%; cursor: pointer; font-size: 18px; transition: 0.3s;
+        }
+        .btn-black:hover { transform: scale(1.1); }
+        .btn-remove { background: #ddd; color: #666; font-size: 14px; }
 
-        /* --- BOTONES Y RESULTADOS --- */
-        .botones-container { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .boton-estilo { padding: 14px; border-radius: 30px; border: 1px solid #ccc; background: white; font-weight: 700; font-size: 13px; cursor: pointer; transition: 0.3s; font-family: 'Open Sans', sans-serif; display: flex; align-items: center; justify-content: center; }
-        .boton-principal { background: black; color: white; border: none; }
-        .boton-principal:hover { opacity: 0.9; }
+        /* PRODUCTOS */
+        .prod-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .vector-card { background: white; padding: 20px; border-radius: 25px; border: 1px solid #ddd; }
+        .vector-card h3 { font-size: 14px; margin-top: 0; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px; }
 
-        #resultados-prod { margin-top: 25px; padding: 20px; background: white; border-radius: 25px; border: 1px solid #ddd; display: none; text-align: center; }
-        .res-val { font-size: 18px; font-weight: 700; }
+        .btn-calc { 
+            width: 100%; padding: 15px; background: black; color: white; border: none; 
+            border-radius: 30px; font-weight: 700; cursor: pointer; margin-top: 10px;
+        }
 
-        /* --- ÁREA DE VISUALIZACIÓN --- */
-        .visualizacion-box { margin-top: 20px; background: white; border-radius: 25px; padding: 20px; border: 1px solid #ddd; height: 400px; position: relative; }
-        .watermark { position: absolute; bottom: 10px; right: 20px; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 12px; color: #bbb; pointer-events: none; }
+        #graph-container { background: white; border-radius: 25px; border: 1px solid #ddd; height: 450px; position: relative; }
+        .watermark { position: absolute; bottom: 15px; right: 20px; font-family: 'Playfair Display', serif; font-size: 12px; color: #ccc; z-index: 10; }
     </style>
 </head>
 <body>
 
-<div class="fade-in" style="width: 100%; display: flex; justify-content: center;">
-    <div class="calculadora-moderna">
-        <div class="header-section">
-            <h1>Calculadora de Vectores</h1>
-            <p>√(Raiz) Cuadrada²</p>
-        </div>
+<div class="calculadora-moderna">
+    <div class="header-section">
+        <h1>Calculadora de Vectores</h1>
+        <p>√(Raiz) Cuadrada²</p>
+    </div>
 
-        <div class="pill-container">
-            <div class="pill">
-                <button id="mode-sumas" class="pill-btn active" onclick="setMode('sumas')">Sumas y Restas</button>
-                <button id="mode-productos" class="pill-btn" onclick="setMode('productos')">Productos</button>
-            </div>
+    <div class="pill-container">
+        <div class="pill">
+            <button id="btn-sum" class="pill-btn active" onclick="switchTab('sumas')">Sumas y Restas</button>
+            <button id="btn-prod" class="pill-btn" onclick="switchTab('productos')">Productos</button>
         </div>
+    </div>
 
-        <div id="sumas-content" class="content-section active">
-            <table class="vector-table" id="vector-table">
+    <div id="sec-sumas" class="content-section active-section">
+        <div class="vector-container">
+            <table>
                 <thead>
                     <tr>
-                        <th>Vec</th>
-                        <th>Magnitud |V|</th>
+                        <th>ID</th>
+                        <th>Magnitud</th>
                         <th>Ángulo (°)</th>
                         <th>Comp. X</th>
                         <th>Comp. Y</th>
                         <th></th>
                     </tr>
                 </thead>
-                <tbody id="vector-rows">
-                    </tbody>
+                <tbody id="vector-body"></tbody>
                 <tfoot>
-                    <tr style="background: #f9f9f9;">
-                        <td class="vector-row-label" style="color: #000;">= Σ</td>
-                        <td><input class="vector-input vector-result" id="res-mag" readonly></td>
-                        <td><input class="vector-input vector-result" id="res-ang" readonly></td>
-                        <td><input class="vector-input vector-result" id="res-x" readonly></td>
-                        <td><input class="vector-input vector-result" id="res-y" readonly></td>
-                        <td><button class="btn-icon btn-add" onclick="addVectorRow()">+</button></td>
+                    <tr>
+                        <td style="font-weight: 700;">Σ</td>
+                        <td><input id="total-mag" class="res-input" readonly></td>
+                        <td><input id="total-ang" class="res-input" readonly></td>
+                        <td><input id="total-x" class="res-input" readonly></td>
+                        <td><input id="total-y" class="res-input" readonly></td>
+                        <td><button class="btn-black" onclick="addVectorRow()">+</button></td>
                     </tr>
                 </tfoot>
             </table>
+        </div>
+        <div id="graph-container">
+            <div id="plot-sum" style="width:100%; height:100%;"></div>
+            <div class="watermark">√(Raiz) Cuadrada²</div>
+        </div>
+    </div>
 
-            <div class="visualizacion-box">
-                <div id="graph-sumas" style="width: 100%; height: 100%;"></div>
-                <div class="watermark">√(Raiz) Cuadrada²</div>
+    <div id="sec-productos" class="content-section">
+        <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
+            <select id="prod-type" style="padding: 10px; border-radius: 15px; font-family: 'Open Sans'; font-weight: 600;" onchange="toggleVectorC()">
+                <option value="dot">Producto Punto (A · B)</option>
+                <option value="cross">Producto Cruz (A × B)</option>
+                <option value="triple">Triple Producto Cruz (A × (B × C))</option>
+            </select>
+        </div>
+
+        <div class="prod-grid">
+            <div class="vector-card">
+                <h3>Vector A</h3>
+                <div style="display:flex; gap:5px;">
+                    <input type="number" id="ax" placeholder="X">
+                    <input type="number" id="ay" placeholder="Y">
+                    <input type="number" id="az" placeholder="Z" value="0">
+                </div>
+            </div>
+            <div class="vector-card">
+                <h3>Vector B</h3>
+                <div style="display:flex; gap:5px;">
+                    <input type="number" id="bx" placeholder="X">
+                    <input type="number" id="by" placeholder="Y">
+                    <input type="number" id="bz" placeholder="Z" value="0">
+                </div>
+            </div>
+            <div class="vector-card" id="card-c" style="display:none;">
+                <h3>Vector C</h3>
+                <div style="display:flex; gap:5px;">
+                    <input type="number" id="cx" placeholder="X">
+                    <input type="number" id="cy" placeholder="Y">
+                    <input type="number" id="cz" placeholder="Z" value="0">
+                </div>
             </div>
         </div>
 
-        <div id="productos-content" class="content-section">
-            <div class="operation-selector">
-                <label class="radio-label"><input type="radio" name="op" value="dot" checked onchange="toggleVectorC()"> Producto Punto (A · B)</label>
-                <label class="radio-label"><input type="radio" name="op" value="cross" onchange="toggleVectorC()"> Producto Cruz (A × B)</label>
-                <label class="radio-label"><input type="radio" name="op" value="triple" onchange="toggleVectorC()"> Triple Producto (A × (B × C))</label>
-            </div>
+        <button class="btn-calc" onclick="calculateProduct()">Calcular y Graficar</button>
+        
+        <div id="res-prod-box" style="margin-top:20px; text-align:center; font-weight:700; font-size:18px;"></div>
 
-            <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
-                <div style="flex: 1; min-width: 200px;">
-                    <h3 style="text-align: center; margin: 10px 0; font-size: 14px;">Vector A</h3>
-                    <div class="grid-inputs-prod">
-                        <div class="input-group"><label>Ax</label><input type="number" id="ax"></div>
-                        <div class="input-group"><label>Ay</label><input type="number" id="ay"></div>
-                        <div class="input-group"><label>Az</label><input type="number" id="az" value="0"></div>
-                    </div>
-                </div>
-                <div style="flex: 1; min-width: 200px;">
-                    <h3 style="text-align: center; margin: 10px 0; font-size: 14px;">Vector B</h3>
-                    <div class="grid-inputs-prod">
-                        <div class="input-group"><label>Bx</label><input type="number" id="bx"></div>
-                        <div class="input-group"><label>By</label><input type="number" id="by"></div>
-                        <div class="input-group"><label>Bz</label><input type="number" id="bz" value="0"></div>
-                    </div>
-                </div>
-                <div id="vector-c-group" style="flex: 1; min-width: 200px; display: none;">
-                    <h3 style="text-align: center; margin: 10px 0; font-size: 14px;">Vector C</h3>
-                    <div class="grid-inputs-prod">
-                        <div class="input-group"><label>Cx</label><input type="number" id="cx"></div>
-                        <div class="input-group"><label>Cy</label><input type="number" id="cy"></div>
-                        <div class="input-group"><label>Cz</label><input type="number" id="cz" value="0"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="botones-container">
-                <button onclick="calculateProduct()" class="boton-estilo boton-principal">Calcular Producto</button>
-                <button onclick="clearProduct()" class="boton-estilo">Limpiar Campos</button>
-            </div>
-
-            <div id="resultados-prod">
-                <span id="prod-res-label" style="display: block; margin-bottom: 10px; font-size: 13px; color: #555;">Resultado:</span>
-                <span id="prod-res-val" class="res-val"></span>
-            </div>
-            
-             <div class="visualizacion-box" id="viz-prod-box" style="display: none;">
-                <div id="graph-prod" style="width: 100%; height: 100%;"></div>
-                <div class="watermark">√(Raiz) Cuadrada²</div>
-            </div>
+        <div id="graph-container" style="margin-top:20px;">
+            <div id="plot-prod" style="width:100%; height:100%;"></div>
+            <div class="watermark">√(Raiz) Cuadrada²</div>
         </div>
     </div>
 </div>
 
 <script>
-    // --- LÓGICA GENERAL ---
-    let currentMode = 'sumas';
-    const toRad = d => d * Math.PI / 180;
-    const toDeg = r => r * 180 / Math.PI;
+    let vectorData = [];
+    const colors = ['#333', '#555', '#777', '#999', '#bbb'];
 
-    function setMode(mode) {
-        currentMode = mode;
-        document.getElementById('mode-sumas').classList.toggle('active', mode === 'sumas');
-        document.getElementById('mode-productos').classList.toggle('active', mode === 'productos');
-        document.getElementById('sumas-content').classList.toggle('active', mode === 'sumas');
-        document.getElementById('productos-content').classList.toggle('active', mode === 'productos');
-        if (mode === 'sumas') calculate Sums(); // Recalcular/redibujar al volver
+    function switchTab(mode) {
+        document.getElementById('sec-sumas').classList.toggle('active-section', mode === 'sumas');
+        document.getElementById('sec-productos').classList.toggle('active-section', mode === 'productos');
+        document.getElementById('btn-sum').classList.toggle('active', mode === 'sumas');
+        document.getElementById('btn-prod').classList.toggle('active', mode === 'productos');
+        
+        // Refrescar gráficas al cambiar
+        setTimeout(() => {
+            window.dispatchEvent(new Event('resize'));
+        }, 100);
     }
-
-    // --- LÓGICA DE SUMAS Y RESTAS ---
-    let vectors = [];
-    const colors = ['#FF5733', '#33FF57', '#3357FF', '#FF33A8', '#A833FF'];
 
     function addVectorRow() {
-        const tbody = document.getElementById('vector-rows');
-        const index = vectors.length;
-        const color = colors[index % colors.length];
-        vectors.push({ mag: 0, ang: 0, x: 0, y: 0 });
-
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td class="vector-row-label" style="color: ${color};">${String.fromCharCode(65 + index)}</td>
-            <td><input type="number" class="vector-input" id="mag-${index}" oninput="calcFromPolar(${index})"></td>
-            <td><input type="number" class="vector-input" id="ang-${index}" oninput="calcFromPolar(${index})"></td>
-            <td><input type="number" class="vector-input" id="x-${index}" oninput="calcFromCartesian(${index})"></td>
-            <td><input type="number" class="vector-input" id="y-${index}" oninput="calcFromCartesian(${index})"></td>
-            <td><button class="btn-icon btn-remove" onclick="removeVectorRow(${index})">×</button></td>
-        `;
-        tbody.appendChild(row);
+        const id = Date.now();
+        const row = { id, mag: 0, ang: 0, x: 0, y: 0 };
+        vectorData.push(row);
+        renderTable();
     }
 
-    function removeVectorRow(index) {
-        vectors.splice(index, 1);
-        const tbody = document.getElementById('vector-rows');
-        tbody.removeChild(tbody.children[index]);
-        // Renombrar filas restantes
-        Array.from(tbody.children).forEach((row, i) => {
-            row.children[0].innerText = String.fromCharCode(65 + i);
-            row.children[0].style.color = colors[i % colors.length];
-            row.querySelectorAll('input').forEach(inp => {
-                const type = inp.id.split('-')[0];
-                inp.id = `${type}-${i}`;
-                inp.setAttribute('oninput', type === 'mag' || type === 'ang' ? `calcFromPolar(${i})` : `calcFromCartesian(${i})`);
-            });
-            row.querySelector('.btn-remove').setAttribute('onclick', `removeVectorRow(${i})`);
+    function removeVector(id) {
+        vectorData = vectorData.filter(v => v.id !== id);
+        renderTable();
+        updateSums();
+    }
+
+    function renderTable() {
+        const body = document.getElementById('vector-body');
+        body.innerHTML = '';
+        vectorData.forEach((v, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-weight:700; color:#888">${String.fromCharCode(65 + index)}</td>
+                <td><input type="number" id="m-${v.id}" value="${v.mag}" oninput="updateFromPolar(${v.id})"></td>
+                <td><input type="number" id="a-${v.id}" value="${v.ang}" oninput="updateFromPolar(${v.id})"></td>
+                <td><input type="number" id="x-${v.id}" value="${v.x}" oninput="updateFromCartesian(${v.id})"></td>
+                <td><input type="number" id="y-${v.id}" value="${v.y}" oninput="updateFromCartesian(${v.id})"></td>
+                <td><button class="btn-black btn-remove" onclick="removeVector(${v.id})">×</button></td>
+            `;
+            body.appendChild(tr);
         });
-        calculateSums();
     }
 
-    function calcFromPolar(i) {
-        const mag = parseFloat(document.getElementById(`mag-${i}`).value) || 0;
-        const ang = parseFloat(document.getElementById(`ang-${i}`).value) || 0;
-        const x = mag * Math.cos(toRad(ang));
-        const y = mag * Math.sin(toRad(ang));
-        document.getElementById(`x-${i}`).value = x.toFixed(2);
-        document.getElementById(`y-${i}`).value = y.toFixed(2);
-        vectors[i] = { mag, ang, x, y };
-        calculateSums();
+    function updateFromPolar(id) {
+        const m = parseFloat(document.getElementById(`m-${id}`).value) || 0;
+        const a = parseFloat(document.getElementById(`a-${id}`).value) || 0;
+        const x = m * Math.cos(a * Math.PI / 180);
+        const y = m * Math.sin(a * Math.PI / 180);
+        document.getElementById(`x-${id}`).value = x.toFixed(2);
+        document.getElementById(`y-${id}`).value = y.toFixed(2);
+        saveAndSync(id, m, a, x, y);
     }
 
-    function calcFromCartesian(i) {
-        const x = parseFloat(document.getElementById(`x-${i}`).value) || 0;
-        const y = parseFloat(document.getElementById(`y-${i}`).value) || 0;
-        const mag = Math.sqrt(x*x + y*y);
-        let ang = toDeg(Math.atan2(y, x));
-        if (ang < 0) ang += 360; // Ángulo positivo 0-360
-        document.getElementById(`mag-${i}`).value = mag.toFixed(2);
-        document.getElementById(`ang-${i}`).value = ang.toFixed(2);
-        vectors[i] = { mag, ang, x, y };
-        calculateSums();
+    function updateFromCartesian(id) {
+        const x = parseFloat(document.getElementById(`x-${id}`).value) || 0;
+        const y = parseFloat(document.getElementById(`y-${id}`).value) || 0;
+        const m = Math.sqrt(x*x + y*y);
+        let a = Math.atan2(y, x) * 180 / Math.PI;
+        if (a < 0) a += 360;
+        document.getElementById(`m-${id}`).value = m.toFixed(2);
+        document.getElementById(`a-${id}`).value = a.toFixed(2);
+        saveAndSync(id, m, a, x, y);
     }
 
-    function calculateSums() {
-        let totalX = 0, totalY = 0;
-        vectors.forEach(v => { totalX += v.x; totalY += v.y; });
-        const totalMag = Math.sqrt(totalX*totalX + totalY*totalY);
-        let totalAng = toDeg(Math.atan2(totalY, totalX));
-        if (totalAng < 0) totalAng += 360;
-
-        document.getElementById('res-x').value = totalX.toFixed(2);
-        document.getElementById('res-y').value = totalY.toFixed(2);
-        document.getElementById('res-mag').value = totalMag.toFixed(2);
-        document.getElementById('res-ang').value = totalAng.toFixed(2);
-
-        drawSumGraph(totalX, totalY);
+    function saveAndSync(id, m, a, x, y) {
+        const v = vectorData.find(item => item.id === id);
+        v.mag = m; v.ang = a; v.x = x; v.y = y;
+        updateSums();
     }
 
-    function drawSumGraph(resX, resY) {
-        const data = [];
-        let currentX = 0, currentY = 0;
-        let maxVal = Math.max(Math.abs(resX), Math.abs(resY), 10);
+    function updateSums() {
+        let tx = 0, ty = 0;
+        vectorData.forEach(v => { tx += v.x; ty += v.y; });
+        const tm = Math.sqrt(tx*tx + ty*ty);
+        let ta = Math.atan2(ty, tx) * 180 / Math.PI;
+        if (ta < 0) ta += 360;
 
-        // Vectores individuales cabeza-cola
-        vectors.forEach((v, i) => {
-            data.push({
-                type: 'scatter', mode: 'lines+markers',
-                x: [currentX, currentX + v.x], y: [currentY, currentY + v.y],
-                line: { color: colors[i % colors.length], width: 3 },
-                marker: { size: 8, symbol: 'arrow-bar-up', angleref: 'previous' },
-                name: `Vec ${String.fromCharCode(65 + i)}`
+        document.getElementById('total-x').value = tx.toFixed(2);
+        document.getElementById('total-y').value = ty.toFixed(2);
+        document.getElementById('total-mag').value = tm.toFixed(2);
+        document.getElementById('total-ang').value = ta.toFixed(2);
+
+        drawSumGraph(tx, ty);
+    }
+
+    function drawSumGraph(tx, ty) {
+        const traces = [];
+        let cx = 0, cy = 0;
+
+        vectorData.forEach((v, i) => {
+            traces.push({
+                x: [cx, cx + v.x], y: [cy, cy + v.y],
+                mode: 'lines+markers', type: 'scatter',
+                name: `Vec ${String.fromCharCode(65 + i)}`,
+                line: { width: 3, color: colors[i % colors.length] },
+                marker: { size: 6 }
             });
-            currentX += v.x; currentY += v.y;
-            maxVal = Math.max(maxVal, Math.abs(currentX), Math.abs(currentY));
+            cx += v.x; cy += v.y;
         });
 
-        // Vector Resultante
-        data.push({
-            type: 'scatter', mode: 'lines+markers',
-            x: [0, resX], y: [0, resY],
-            line: { color: '#333', width: 4, dash: 'dot' },
-            marker: { size: 12, symbol: 'arrow', color: '#333', angleref: 'previous' },
-            name: 'Resultante'
+        traces.push({
+            x: [0, tx], y: [0, ty],
+            mode: 'lines+markers', type: 'scatter',
+            name: 'Σ Resultante',
+            line: { width: 4, color: 'black', dash: 'dash' },
+            marker: { size: 10, symbol: 'arrow-bar-up' }
         });
 
         const layout = {
-            autosize: true, margin: { l: 40, r: 20, t: 20, b: 40 },
-            xaxis: { zeroline: true, gridcolor: '#eee', range: [-maxVal*1.2, maxVal*1.2] },
-            yaxis: { zeroline: true, gridcolor: '#eee', range: [-maxVal*1.2, maxVal*1.2], scaleanchor: 'x' },
-            showlegend: true, legend: { x: 0, y: 1 },
-            paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)'
+            grid: { rows: 1, columns: 1 },
+            xaxis: { zeroline: true, gridcolor: '#eee', title: 'Componente X' },
+            yaxis: { zeroline: true, gridcolor: '#eee', title: 'Componente Y', scaleanchor: "x" },
+            margin: { l: 40, r: 20, t: 20, b: 40 },
+            showlegend: true
         };
-        Plotly.newPlot('graph-sumas', data, layout, {displayModeBar: false});
+
+        Plotly.newPlot('plot-sum', traces, layout, {responsive: true, displayModeBar: false});
     }
 
-    // --- LÓGICA DE PRODUCTOS ---
+    // --- PRODUCTOS ---
     function toggleVectorC() {
-        const op = document.querySelector('input[name="op"]:checked').value;
-        document.getElementById('vector-c-group').style.display = op === 'triple' ? 'block' : 'none';
-        document.getElementById('resultados-prod').style.display = 'none';
-        document.getElementById('viz-prod-box').style.display = 'none';
-    }
-
-    function getVec(prefix) {
-        return {
-            x: parseFloat(document.getElementById(`${prefix}x`).value) || 0,
-            y: parseFloat(document.getElementById(`${prefix}y`).value) || 0,
-            z: parseFloat(document.getElementById(`${prefix}z`).value) || 0
-        };
+        const type = document.getElementById('prod-type').value;
+        document.getElementById('card-c').style.display = type === 'triple' ? 'block' : 'none';
     }
 
     function calculateProduct() {
-        const op = document.querySelector('input[name="op"]:checked').value;
-        const A = getVec('a'), B = getVec('b');
-        const resBox = document.getElementById('resultados-prod');
-        const resVal = document.getElementById('prod-res-val');
-        const resLabel = document.getElementById('prod-res-label');
-        const vizBox = document.getElementById('viz-prod-box');
-        resBox.style.display = 'block';
+        const type = document.getElementById('prod-type').value;
+        const A = { x: parseFloat(document.getElementById('ax').value)||0, y: parseFloat(document.getElementById('ay').value)||0, z: parseFloat(document.getElementById('az').value)||0 };
+        const B = { x: parseFloat(document.getElementById('bx').value)||0, y: parseFloat(document.getElementById('by').value)||0, z: parseFloat(document.getElementById('bz').value)||0 };
+        
+        let resText = "";
+        let R = {x:0, y:0, z:0};
 
-        if (op === 'dot') {
+        if (type === 'dot') {
             const dot = A.x*B.x + A.y*B.y + A.z*B.z;
-            resLabel.innerText = "Resultado Escalar:";
-            resVal.innerText = dot.toFixed(2);
-            vizBox.style.display = 'none'; // No visualization for dot product yet
-        } else if (op === 'cross') {
-            const Cx = A.y*B.z - A.z*B.y;
-            const Cy = A.z*B.x - A.x*B.z;
-            const Cz = A.x*B.y - A.y*B.x;
-            resLabel.innerText = "Vector Resultante (X, Y, Z):";
-            resVal.innerText = `(${Cx.toFixed(2)}, ${Cy.toFixed(2)}, ${Cz.toFixed(2)})`;
-            vizBox.style.display = 'block';
-            drawCrossGraph(A, B, {x:Cx, y:Cy, z:Cz});
-        } else if (op === 'triple') {
-            const C = getVec('c');
-            // B x C first
+            resText = `Escalar Resultante: ${dot.toFixed(2)}`;
+            draw3D([A, B], "Producto Punto");
+        } else if (type === 'cross') {
+            R.x = A.y*B.z - A.z*B.y;
+            R.y = A.z*B.x - A.x*B.z;
+            R.z = A.x*B.y - A.y*B.x;
+            resText = `Vector Resultante: (${R.x.toFixed(2)}i, ${R.y.toFixed(2)}j, ${R.z.toFixed(2)}k)`;
+            draw3D([A, B, R], "Producto Cruz");
+        } else if (type === 'triple') {
+            const C = { x: parseFloat(document.getElementById('cx').value)||0, y: parseFloat(document.getElementById('cy').value)||0, z: parseFloat(document.getElementById('cz').value)||0 };
+            // A x (B x C)
             const BCx = B.y*C.z - B.z*C.y;
             const BCy = B.z*C.x - B.x*C.z;
             const BCz = B.x*C.y - B.y*C.x;
-            // Then A x (B x C)
-            const Rx = A.y*BCz - A.z*BCy;
-            const Ry = A.z*BCx - A.x*BCz;
-            const Rz = A.x*BCy - A.y*BCx;
-            resLabel.innerText = "Vector Resultante (X, Y, Z):";
-            resVal.innerText = `(${Rx.toFixed(2)}, ${Ry.toFixed(2)}, ${Rz.toFixed(2)})`;
-            vizBox.style.display = 'none'; // Too complex to visualize simply
+            R.x = A.y*BCz - A.z*BCy;
+            R.y = A.z*BCx - A.x*BCz;
+            R.z = A.x*BCy - A.y*BCx;
+            resText = `Triple Producto Cruz: (${R.x.toFixed(2)}i, ${R.y.toFixed(2)}j, ${R.z.toFixed(2)}k)`;
+            draw3D([A, B, C, R], "Triple Producto Cruz");
         }
+        document.getElementById('res-prod-box').innerText = resText;
     }
 
-    function drawCrossGraph(A, B, R) {
-        const data = [
-            { type: 'scatter3d', mode: 'lines+markers', x: [0, A.x], y: [0, A.y], z: [0, A.z], line: {color: 'red', width: 5}, name: 'Vec A' },
-            { type: 'scatter3d', mode: 'lines+markers', x: [0, B.x], y: [0, B.y], z: [0, B.z], line: {color: 'blue', width: 5}, name: 'Vec B' },
-            { type: 'scatter3d', mode: 'lines+markers', x: [0, R.x], y: [0, R.y], z: [0, R.z], line: {color: 'purple', width: 5}, name: 'A × B' }
-        ];
-        const layout = {
-            autosize: true, margin: { l:0, r:0, b:0, t:0 },
-            scene: { aspectmode: 'data' }, showlegend: true
-        };
-        Plotly.newPlot('graph-prod', data, layout, {displayModeBar: false});
+    function draw3D(vecs, title) {
+        const traces = vecs.map((v, i) => ({
+            type: 'scatter3d', mode: 'lines+markers',
+            x: [0, v.x], y: [0, v.y], z: [0, v.z],
+            line: { width: 6, color: i === vecs.length - 1 && vecs.length > 2 ? 'black' : colors[i] },
+            name: i === vecs.length - 1 && vecs.length > 2 ? 'Resultado' : `Vec ${String.fromCharCode(65+i)}`
+        }));
+
+        Plotly.newPlot('plot-prod', traces, { 
+            margin: {l:0, r:0, b:0, t:0},
+            scene: { xaxis: {title:'X'}, yaxis: {title:'Y'}, zaxis: {title:'Z'} }
+        });
     }
 
-    function clearProduct() {
-        document.querySelectorAll('#productos-content input[type="number"]').forEach(i => i.value = i.id.includes('z') ? 0 : '');
-        document.getElementById('resultados-prod').style.display = 'none';
-        document.getElementById('viz-prod-box').style.display = 'none';
-    }
-
-    // Inicialización
-    addVectorRow(); addVectorRow(); // Empezar con 2 vectores
-    window.addEventListener('resize', () => {
-        if(currentMode === 'sumas') Plotly.relayout('graph-sumas', {autosize: true});
-        if(currentMode === 'productos') Plotly.relayout('graph-prod', {autosize: true});
-    });
+    // Inicializar
+    addVectorRow();
+    addVectorRow();
 </script>
 </body>
 </html>
