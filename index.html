@@ -23,7 +23,7 @@
         .header-section h1 { font-size: 26px; margin: 0; font-family: 'Playfair Display', serif; }
         .header-section p { font-size: 18px; font-weight: 600; font-family: 'Playfair Display', serif; margin: 5px 0; }
 
-        /* PÍLDORA */
+        /* PÍLDORA SELECCIÓN */
         .pill-container { display: flex; justify-content: center; margin-bottom: 30px; }
         .pill { background: #e0e0e0; border-radius: 50px; padding: 5px; display: flex; border: 1px solid #ccc; }
         .pill-btn { 
@@ -65,7 +65,7 @@
         .btn-black:hover { transform: scale(1.1); }
         .btn-remove { background: #ddd; color: #666; font-size: 14px; }
 
-        /* PRODUCTOS - CORRECCIÓN DE ENCUADRE */
+        /* PRODUCTOS */
         .prod-grid { 
             display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; 
         }
@@ -75,7 +75,6 @@
         }
         .vector-card h3 { font-size: 14px; margin: 0 0 15px 0; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         .card-color { position: absolute; top: 12px; right: 15px; }
-
         .inputs-row { display: flex; justify-content: center; gap: 5px; }
 
         .btn-calc { 
@@ -84,15 +83,42 @@
         }
 
         #graph-container { background: white; border-radius: 25px; border: 1px solid #ddd; height: 450px; position: relative; overflow: hidden; }
-        
-        /* BOTÓN DESCARGA ESTILO ORIGINAL */
-        .download-btn-float {
-            position: absolute; top: 15px; right: 15px; z-index: 100;
-            background: black; color: white; border: none; width: 40px; height: 40px;
-            border-radius: 50%; cursor: pointer; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center;
+
+        /* BOTÓN DESCARGAR ESTILO IMAGEN (PÍLDORA BLANCA) */
+        .download-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
         }
-        .download-btn-float:hover { transform: scale(1.1); background: #333; }
+
+        .btn-download-pill {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 50px;
+            padding: 12px 35px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 700;
+            font-size: 15px;
+            color: #000;
+        }
+
+        .btn-download-pill:hover {
+            background: #fafafa;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            border-color: #ccc;
+        }
+
+        .btn-download-pill svg {
+            width: 20px;
+            height: 20px;
+        }
     </style>
 </head>
 <body>
@@ -141,10 +167,13 @@
             </table>
         </div>
         <div id="graph-container">
-            <button class="download-btn-float" onclick="downloadPlot('plot-sum')" title="Descargar PNG">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            </button>
             <div id="plot-sum" style="width:100%; height:100%;"></div>
+        </div>
+        <div class="download-container">
+            <button class="btn-download-pill" onclick="downloadPlot('plot-sum')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Descargar PNG
+            </button>
         </div>
     </div>
 
@@ -197,10 +226,13 @@
         <div id="res-prod-box" style="margin-top:20px; text-align:center; font-weight:700; font-size:18px; min-height: 25px;"></div>
 
         <div id="graph-container" style="margin-top:20px;">
-            <button class="download-btn-float" onclick="downloadPlot('plot-prod')" title="Descargar PNG">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            </button>
             <div id="plot-prod" style="width:100%; height:100%;"></div>
+        </div>
+        <div class="download-container">
+            <button class="btn-download-pill" onclick="downloadPlot('plot-prod')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                Descargar PNG
+            </button>
         </div>
     </div>
 </div>
@@ -407,11 +439,30 @@
         Plotly.newPlot('plot-prod', traces, layout, {responsive: true, displayModeBar: false});
     }
 
-    function downloadPlot(id) {
+    // FUNCIÓN DE DESCARGA MEJORADA CON MARCA DE AGUA GRANDE
+    async function downloadPlot(id) {
         const plot = document.getElementById(id);
-        Plotly.downloadImage(plot, {
+        
+        // Guardamos el tamaño de fuente original para restaurarlo luego
+        const originalSize = (id === 'plot-sum') ? 14 : 16;
+        const originalColor = (id === 'plot-sum') ? "#ccc" : "#ddd";
+
+        // Aumentamos temporalmente el tamaño de la marca de agua para la captura
+        await Plotly.relayout(plot, {
+            'annotations[0].font.size': 45, // Mucho más grande
+            'annotations[0].font.color': 'rgba(0,0,0,0.15)' // Un poco más visible en el PNG
+        });
+
+        // Generamos la descarga
+        await Plotly.downloadImage(plot, {
             format: 'png', width: 1200, height: 900,
             filename: 'analisis_vectores_raiz_cuadrada'
+        });
+
+        // Restauramos el tamaño original para que en la web no se vea desproporcionado
+        Plotly.relayout(plot, {
+            'annotations[0].font.size': originalSize,
+            'annotations[0].font.color': originalColor
         });
     }
 
