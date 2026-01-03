@@ -48,10 +48,9 @@
         input:focus { border-color: #000; outline: none; }
         .res-input { background: #f0f0f0; font-weight: 700; border: none; }
         
-        /* Selector de color minimalista */
         .color-picker {
             width: 30px; height: 30px; padding: 0; border: none; border-radius: 50%;
-            cursor: pointer; overflow: hidden; background: none;
+            cursor: pointer; overflow: hidden; background: none; vertical-align: middle;
         }
 
         .op-select {
@@ -61,15 +60,23 @@
         .btn-black { 
             background: black; color: white; border: none; width: 35px; height: 35px; 
             border-radius: 50%; cursor: pointer; font-size: 18px; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
         }
         .btn-black:hover { transform: scale(1.1); }
         .btn-remove { background: #ddd; color: #666; font-size: 14px; }
 
-        /* PRODUCTOS */
-        .prod-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
-        .vector-card { background: white; padding: 20px; border-radius: 25px; border: 1px solid #ddd; position: relative; }
-        .vector-card h3 { font-size: 14px; margin-top: 0; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        .card-color { position: absolute; top: 15px; right: 15px; }
+        /* PRODUCTOS - CORRECCIÓN DE ENCUADRE */
+        .prod-grid { 
+            display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; margin-bottom: 20px; 
+        }
+        .vector-card { 
+            background: white; padding: 20px; border-radius: 25px; border: 1px solid #ddd; 
+            min-width: 210px; flex: 1; max-width: 230px; position: relative;
+        }
+        .vector-card h3 { font-size: 14px; margin: 0 0 15px 0; text-align: center; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .card-color { position: absolute; top: 12px; right: 15px; }
+
+        .inputs-row { display: flex; justify-content: center; gap: 5px; }
 
         .btn-calc { 
             width: 100%; padding: 15px; background: black; color: white; border: none; 
@@ -77,14 +84,15 @@
         }
 
         #graph-container { background: white; border-radius: 25px; border: 1px solid #ddd; height: 450px; position: relative; overflow: hidden; }
-        .watermark { position: absolute; bottom: 15px; right: 20px; font-family: 'Playfair Display', serif; font-size: 12px; color: #ccc; z-index: 10; pointer-events: none; }
         
-        .download-btn {
-            position: absolute; top: 15px; right: 15px; background: white; border: 1px solid #ddd;
-            padding: 8px; border-radius: 12px; cursor: pointer; z-index: 10; display: flex; align-items: center; gap: 5px;
-            font-size: 12px; font-weight: 600; transition: 0.3s;
+        /* BOTÓN DESCARGA ESTILO ORIGINAL */
+        .download-btn-float {
+            position: absolute; top: 15px; right: 15px; z-index: 100;
+            background: black; color: white; border: none; width: 40px; height: 40px;
+            border-radius: 50%; cursor: pointer; transition: 0.3s;
+            display: flex; align-items: center; justify-content: center;
         }
-        .download-btn:hover { background: #f9f9f9; box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+        .download-btn-float:hover { transform: scale(1.1); background: #333; }
     </style>
 </head>
 <body>
@@ -133,18 +141,16 @@
             </table>
         </div>
         <div id="graph-container">
-            <button class="download-btn" onclick="downloadPlot('plot-sum')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                PNG
+            <button class="download-btn-float" onclick="downloadPlot('plot-sum')" title="Descargar PNG">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             </button>
             <div id="plot-sum" style="width:100%; height:100%;"></div>
-            <div class="watermark">√(Raiz) Cuadrada²</div>
         </div>
     </div>
 
     <div id="sec-productos" class="content-section">
-        <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 20px;">
-            <select id="prod-type" style="padding: 10px; border-radius: 15px; font-family: 'Open Sans'; font-weight: 600;" onchange="toggleVectorC()">
+        <div style="display: flex; justify-content: center; gap: 20px; margin-bottom: 25px;">
+            <select id="prod-type" style="padding: 12px 20px; border-radius: 15px; font-family: 'Open Sans'; font-weight: 600; border: 1px solid #ccc;" onchange="toggleVectorC()">
                 <option value="dot">Producto Punto (A · B)</option>
                 <option value="cross">Producto Cruz (A × B)</option>
                 <option value="triple_scalar">Triple Producto Escalar (A · (B × C))</option>
@@ -155,8 +161,8 @@
         <div class="prod-grid">
             <div class="vector-card">
                 <h3>Vector A</h3>
-                <input type="color" id="color-a" class="color-picker card-color" value="#333333">
-                <div style="display:flex; gap:5px;">
+                <input type="color" id="color-a" class="color-picker card-color">
+                <div class="inputs-row">
                     <input type="number" id="ax" placeholder="X" value="3">
                     <input type="number" id="ay" placeholder="Y" value="2">
                     <input type="number" id="az" placeholder="Z" value="0">
@@ -164,8 +170,8 @@
             </div>
             <div class="vector-card">
                 <h3>Vector B</h3>
-                <input type="color" id="color-b" class="color-picker card-color" value="#666666">
-                <div style="display:flex; gap:5px;">
+                <input type="color" id="color-b" class="color-picker card-color">
+                <div class="inputs-row">
                     <input type="number" id="bx" placeholder="X" value="-1">
                     <input type="number" id="by" placeholder="Y" value="4">
                     <input type="number" id="bz" placeholder="Z" value="0">
@@ -173,8 +179,8 @@
             </div>
             <div class="vector-card" id="card-c" style="display:none;">
                 <h3>Vector C</h3>
-                <input type="color" id="color-c" class="color-picker card-color" value="#999999">
-                <div style="display:flex; gap:5px;">
+                <input type="color" id="color-c" class="color-picker card-color">
+                <div class="inputs-row">
                     <input type="number" id="cx" placeholder="X" value="2">
                     <input type="number" id="cy" placeholder="Y" value="0">
                     <input type="number" id="cz" placeholder="Z" value="3">
@@ -183,35 +189,30 @@
             <div class="vector-card" id="card-res-prod">
                 <h3>Resultado</h3>
                 <input type="color" id="color-r" class="color-picker card-color" value="#000000">
-                <div style="text-align: center; font-size: 11px; color: #888; margin-top: 5px;">Color en Gráfica</div>
+                <div style="text-align: center; font-size: 11px; color: #888; font-weight: 600;">Color en Gráfica</div>
             </div>
         </div>
 
         <button class="btn-calc" onclick="calculateProduct()">Calcular y Graficar</button>
-        <br>
         <div id="res-prod-box" style="margin-top:20px; text-align:center; font-weight:700; font-size:18px; min-height: 25px;"></div>
 
         <div id="graph-container" style="margin-top:20px;">
-            <button class="download-btn" onclick="downloadPlot('plot-prod')">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                PNG
+            <button class="download-btn-float" onclick="downloadPlot('plot-prod')" title="Descargar PNG">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
             </button>
             <div id="plot-prod" style="width:100%; height:100%;"></div>
-            <div class="watermark">√(Raiz) Cuadrada²</div>
         </div>
     </div>
 </div>
 
 <script>
     let vectorData = [];
-    
-    // Generar color aleatorio
+    const watermarkText = "√(Raiz) Cuadrada²";
+
     function getRandomColor() {
         const letters = '0123456789ABCDEF';
         let color = '#';
-        for (let i = 0; i < 6; i++) {
-            color += letters[Math.floor(Math.random() * 16)];
-        }
+        for (let i = 0; i < 6; i++) color += letters[Math.floor(Math.random() * 16)];
         return color;
     }
 
@@ -225,8 +226,7 @@
 
     function addVectorRow() {
         const id = Date.now();
-        const row = { id, mag: 0, ang: 0, x: 0, y: 0, op: '+', color: getRandomColor() };
-        vectorData.push(row);
+        vectorData.push({ id, mag: 0, ang: 0, x: 0, y: 0, op: '+', color: getRandomColor() });
         renderTable();
     }
 
@@ -243,7 +243,7 @@
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td style="font-weight:700; color:#888">${String.fromCharCode(65 + index)}</td>
-                <td><input type="color" id="c-${v.id}" class="color-picker" value="${v.color}" oninput="updateProp(${v.id}, 'color', this.value)"></td>
+                <td><input type="color" class="color-picker" value="${v.color}" oninput="updateProp(${v.id}, 'color', this.value)"></td>
                 <td>
                     <select class="op-select" onchange="updateProp(${v.id}, 'op', this.value)">
                         <option value="+" ${v.op==='+'?'selected':''}>+</option>
@@ -299,15 +299,11 @@
             if(v.op === '+') { tx += v.x; ty += v.y; }
             else { tx -= v.x; ty -= v.y; }
         });
-        const tm = Math.sqrt(tx*tx + ty*ty);
-        let ta = Math.atan2(ty, tx) * 180 / Math.PI;
-        if (ta < 0) ta += 360;
-
         document.getElementById('total-x').value = tx.toFixed(2);
         document.getElementById('total-y').value = ty.toFixed(2);
-        document.getElementById('total-mag').value = tm.toFixed(2);
-        document.getElementById('total-ang').value = ta.toFixed(2);
-
+        document.getElementById('total-mag').value = Math.sqrt(tx*tx + ty*ty).toFixed(2);
+        let ta = Math.atan2(ty, tx) * 180 / Math.PI;
+        document.getElementById('total-ang').value = (ta < 0 ? ta + 360 : ta).toFixed(2);
         drawSumGraph(tx, ty);
     }
 
@@ -323,7 +319,7 @@
                 x: [cx, cx + vx], y: [cy, cy + vy],
                 mode: 'lines+markers', type: 'scatter',
                 name: `${v.op} Vec ${String.fromCharCode(65 + i)}`,
-                line: { width: 3, color: v.color },
+                line: { width: 4, color: v.color },
                 marker: { size: 6 }
             });
             cx += vx; cy += vy;
@@ -333,16 +329,20 @@
             x: [0, tx], y: [0, ty],
             mode: 'lines+markers', type: 'scatter',
             name: 'Σ Resultante',
-            line: { width: 4, color: rColor, dash: 'dash' },
+            line: { width: 5, color: rColor, dash: 'dash' },
             marker: { size: 10, symbol: 'arrow-bar-up' }
         });
 
         const layout = {
             xaxis: { zeroline: true, gridcolor: '#eee', title: 'Componente X' },
             yaxis: { zeroline: true, gridcolor: '#eee', title: 'Componente Y', scaleanchor: "x" },
-            margin: { l: 40, r: 20, t: 20, b: 40 },
+            margin: { l: 50, r: 30, t: 30, b: 50 },
             showlegend: true,
-            hovermode: 'closest'
+            annotations: [{
+                text: watermarkText, xref: "paper", yref: "paper", x: 1, y: 0,
+                showarrow: false, font: { family: "Playfair Display", size: 14, color: "#ccc", weight: "bold" },
+                xanchor: "right", yanchor: "bottom"
+            }]
         };
 
         Plotly.newPlot('plot-sum', traces, layout, {responsive: true, displayModeBar: false});
@@ -365,42 +365,23 @@
         let vecsToPlot = [A, B];
 
         if (type === 'dot') {
-            const dot = A.x*B.x + A.y*B.y + A.z*B.z;
-            resText = `Escalar Resultante (A · B): ${dot.toFixed(2)}`;
-            draw3D(vecsToPlot, "Producto Punto", null);
+            resText = `Escalar Resultante (A · B): ${(A.x*B.x + A.y*B.y + A.z*B.z).toFixed(2)}`;
+            draw3D(vecsToPlot);
         } else if (type === 'cross') {
-            const R = {
-                x: A.y*B.z - A.z*B.y,
-                y: A.z*B.x - A.x*B.z,
-                z: A.x*B.y - A.y*B.x,
-                color: rColor,
-                isRes: true
-            };
+            const R = { x: A.y*B.z - A.z*B.y, y: A.z*B.x - A.x*B.z, z: A.x*B.y - A.y*B.x, color: rColor, isRes: true };
             resText = `Vector Resultante (A × B): (${R.x.toFixed(2)}i, ${R.y.toFixed(2)}j, ${R.z.toFixed(2)}k)`;
-            draw3D([A, B, R], "Producto Cruz");
+            draw3D([A, B, R]);
         } else if (type === 'triple_scalar') {
             const C = { x: parseFloat(document.getElementById('cx').value)||0, y: parseFloat(document.getElementById('cy').value)||0, z: parseFloat(document.getElementById('cz').value)||0, color: document.getElementById('color-c').value };
-            // A · (B x C)
-            const BCx = B.y*C.z - B.z*C.y;
-            const BCy = B.z*C.x - B.x*C.z;
-            const BCz = B.x*C.y - B.y*C.x;
-            const tripleScalar = A.x*BCx + A.y*BCy + A.z*BCz;
-            resText = `Triple Producto Escalar: ${tripleScalar.toFixed(2)} (Volumen del paralelepípedo)`;
-            draw3D([A, B, C], "Triple Producto Escalar");
+            const BCx = B.y*C.z - B.z*C.y, BCy = B.z*C.x - B.x*C.z, BCz = B.x*C.y - B.y*C.x;
+            resText = `Triple Producto Escalar: ${(A.x*BCx + A.y*BCy + A.z*BCz).toFixed(2)}`;
+            draw3D([A, B, C]);
         } else if (type === 'triple') {
             const C = { x: parseFloat(document.getElementById('cx').value)||0, y: parseFloat(document.getElementById('cy').value)||0, z: parseFloat(document.getElementById('cz').value)||0, color: document.getElementById('color-c').value };
-            const BCx = B.y*C.z - B.z*C.y;
-            const BCy = B.z*C.x - B.x*C.z;
-            const BCz = B.x*C.y - B.y*C.x;
-            const R = {
-                x: A.y*BCz - A.z*BCy,
-                y: A.z*BCx - A.x*BCz,
-                z: A.x*BCy - A.y*BCx,
-                color: rColor,
-                isRes: true
-            };
+            const BCx = B.y*C.z - B.z*C.y, BCy = B.z*C.x - B.x*C.z, BCz = B.x*C.y - B.y*C.x;
+            const R = { x: A.y*BCz - A.z*BCy, y: A.z*BCx - A.x*BCz, z: A.x*BCy - A.y*BCx, color: rColor, isRes: true };
             resText = `Triple Producto Cruz: (${R.x.toFixed(2)}i, ${R.y.toFixed(2)}j, ${R.z.toFixed(2)}k)`;
-            draw3D([A, B, C, R], "Triple Producto Cruz");
+            draw3D([A, B, C, R]);
         }
         document.getElementById('res-prod-box').innerText = resText;
     }
@@ -409,43 +390,37 @@
         const traces = vecs.map((v, i) => ({
             type: 'scatter3d', mode: 'lines+markers',
             x: [0, v.x], y: [0, v.y], z: [0, v.z],
-            line: { width: 6, color: v.color },
+            line: { width: 8, color: v.color },
             name: v.isRes ? 'Resultado' : `Vec ${String.fromCharCode(65+i)}`,
             marker: { size: 4 }
         }));
 
         const layout = { 
             margin: {l:0, r:0, b:0, t:0},
-            scene: { 
-                xaxis: {title:'X', gridcolor: '#ddd'}, 
-                yaxis: {title:'Y', gridcolor: '#ddd'}, 
-                zaxis: {title:'Z', gridcolor: '#ddd'},
-                camera: { eye: {x: 1.5, y: 1.5, z: 1.5} }
-            },
-            showlegend: true
+            scene: { xaxis: {title:'X'}, yaxis: {title:'Y'}, zaxis: {title:'Z'} },
+            showlegend: true,
+            annotations: [{
+                text: watermarkText, xref: "paper", yref: "paper", x: 0.95, y: 0.05,
+                showarrow: false, font: { family: "Playfair Display", size: 16, color: "#ddd", weight: "bold" }
+            }]
         };
-
         Plotly.newPlot('plot-prod', traces, layout, {responsive: true, displayModeBar: false});
     }
 
     function downloadPlot(id) {
         const plot = document.getElementById(id);
         Plotly.downloadImage(plot, {
-            format: 'png',
-            width: 1000,
-            height: 800,
-            filename: 'vector_analysis_raiz_cuadrada'
+            format: 'png', width: 1200, height: 900,
+            filename: 'analisis_vectores_raiz_cuadrada'
         });
     }
 
-    // Inicializar con 2 vectores y colores al azar
     window.onload = () => {
-        addVectorRow();
-        addVectorRow();
+        addVectorRow(); addVectorRow();
         document.getElementById('color-a').value = getRandomColor();
         document.getElementById('color-b').value = getRandomColor();
         document.getElementById('color-c').value = getRandomColor();
-        document.getElementById('color-res').value = '#000000';
+        calculateProduct();
     };
 </script>
 </body>
